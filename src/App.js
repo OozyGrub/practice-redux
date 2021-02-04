@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import User from "./User";
+import { connect } from "react-redux";
 
-function App() {
+const App = ({ user, setName }) => {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Krit Kruaykitanon</h1>
+        <User username={user.name} />
+        <button onClick={() => setName("Redux Tutorial")}>Change Name</button>
       </header>
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+    employee: state.employee
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setName: (name) => {
+      dispatch({
+        type: "setName",
+        payload: name
+      });
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

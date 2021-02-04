@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { createStore, combineReducers, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
 
 const initialState = {
   result: 15000,
@@ -53,14 +54,14 @@ const myLogger = (store) => (next) => (action) => {
 /** store จะเก็บ state */
 // const store = createStore(employeeReducer);
 const store = createStore(
-  combineReducers({ employeeReducer, userReducer }),
+  combineReducers({ employee: employeeReducer, user: userReducer }),
   {},
   applyMiddleware(myLogger)
 );
 
 /** ใช้ในการ update ค่า state */
 store.subscribe(() => {
-  // console.log("Update Store:", store.getState());
+  console.log("Update Store:", store.getState());
 });
 
 /** ใช้ dispatch ในการเปลี่ยนแปลง state */
@@ -69,24 +70,22 @@ store.dispatch({
   payload: 15000
 });
 
-store.dispatch({
-  type: "ADD",
-  payload: 15000
-});
 
 store.dispatch({
   type: "setAge",
   payload: 1000
 });
 
-store.dispatch({
-  type: "setName",
-  payload: "redux"
-});
+// store.dispatch({
+//   type: "setName",
+//   payload: "redux"
+// });
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );
