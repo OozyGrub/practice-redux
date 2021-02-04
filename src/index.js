@@ -4,23 +4,40 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 
 const initialState = {
   result: 15000,
   value: []
 };
 
-/** reducer เป็น pure function */
-const reducer = (state = initialState, action) => {
+/** reducer เป็น pure function ต้อง malloc ใหม่*/
+const employeeReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ADD":
-      state.result += action.payload;
-      state.value.push(action.payload);
+      state = {
+        value: [...state.value, action.payload],
+        result: state.result + action.payload
+      };
       break;
     case "SUBTRACT":
-      state.result -= action.payload;
-      state.value.push(-action.payload);
+      state = {
+        value: [...state.value, -action.payload],
+        result: state.result - action.payload
+      };
+      break;
+    default:
+  }
+  return state;
+};
+
+const userReducer = (state = { name: "Johnny", age: 10 }, action) => {
+  switch (action.type) {
+    case "setName":
+      state = { ...state, name: action.payload };
+      break;
+    case "setAge":
+      state = { ...state, age: action.payload };
       break;
     default:
   }
@@ -28,23 +45,33 @@ const reducer = (state = initialState, action) => {
 };
 
 /** store จะเก็บ state */
-const store = createStore(reducer);
+// const store = createStore(employeeReducer);
+const store = createStore(combineReducers({ employeeReducer, userReducer }));
 
 /** ใช้ในการ update ค่า state */
 store.subscribe(() => {
-  console.log("Update Store:", store.getState().result);
-  console.log("Value Store: ", store.getState().value);
+  console.log("Update Store:", store.getState());
 });
 
 /** ใช้ dispatch ในการเปลี่ยนแปลง state */
 store.dispatch({
   type: "ADD",
-  payload: 0
+  payload: 15000
 });
 
 store.dispatch({
   type: "ADD",
+  payload: 15000
+});
+
+store.dispatch({
+  type: "setAge",
   payload: 1000
+});
+
+store.dispatch({
+  type: "setName",
+  payload: "redux"
 });
 
 ReactDOM.render(
@@ -54,7 +81,4 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
