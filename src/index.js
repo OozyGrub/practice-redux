@@ -6,14 +6,21 @@ import reportWebVitals from "./reportWebVitals";
 
 import { createStore } from "redux";
 
+const initialState = {
+  result: 15000,
+  value: []
+};
+
 /** reducer เป็น pure function */
-const reducer = (state, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "ADD":
-      state += action.payload;
+      state.result += action.payload;
+      state.value.push(action.payload);
       break;
     case "SUBTRACT":
-      state -= action.payload;
+      state.result -= action.payload;
+      state.value.push(-action.payload);
       break;
     default:
   }
@@ -21,14 +28,20 @@ const reducer = (state, action) => {
 };
 
 /** store จะเก็บ state */
-const store = createStore(reducer, 15000);
+const store = createStore(reducer);
 
 /** ใช้ในการ update ค่า state */
 store.subscribe(() => {
-  console.log("Update Store:", store.getState());
+  console.log("Update Store:", store.getState().result);
+  console.log("Value Store: ", store.getState().value);
 });
 
 /** ใช้ dispatch ในการเปลี่ยนแปลง state */
+store.dispatch({
+  type: "ADD",
+  payload: 0
+});
+
 store.dispatch({
   type: "ADD",
   payload: 1000
