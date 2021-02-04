@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 
 const initialState = {
   result: 15000,
@@ -44,13 +44,23 @@ const userReducer = (state = { name: "Johnny", age: 10 }, action) => {
   return state;
 };
 
+/** Middleware */
+const myLogger = (store) => (next) => (action) => {
+  console.log("Log Action", action);
+  next(action);
+};
+
 /** store จะเก็บ state */
 // const store = createStore(employeeReducer);
-const store = createStore(combineReducers({ employeeReducer, userReducer }));
+const store = createStore(
+  combineReducers({ employeeReducer, userReducer }),
+  {},
+  applyMiddleware(myLogger)
+);
 
 /** ใช้ในการ update ค่า state */
 store.subscribe(() => {
-  console.log("Update Store:", store.getState());
+  // console.log("Update Store:", store.getState());
 });
 
 /** ใช้ dispatch ในการเปลี่ยนแปลง state */
